@@ -1,2 +1,3 @@
-# Skiing_Game_in_C-
-Skiing_Game_in_C++ is a SFML game that is under development
+# SkiPro! 
+SkiPro! is a simple game written in C++ using SFML graphics library.
+It is in development
