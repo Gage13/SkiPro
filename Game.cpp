@@ -64,7 +64,7 @@ void Game::processEvents()
   }
 }
 
-void Game::update()
+void Game::update(Time deltaTime)
 {
   Vector2f movement(0.f, 0.f);
   if (mIsMovingUp)
@@ -76,7 +76,7 @@ void Game::update()
   else if (mIsMovingLeft)
     movement.y -= 1.0f;
   
-  mPlayer.move(movement);
+  mPlayer.move(movement * deltaTime.asSeconds());
 }
 
 void Game::render()
