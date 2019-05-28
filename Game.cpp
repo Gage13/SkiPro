@@ -12,8 +12,25 @@ private:
   void render();
 private:
   sf::RenderWindow mWindow;
-  sf::CircleShape mCircel;
+  sf::CircleShape mPlayer;
 };
+
+Game::Game() : mWindow(VideoMode(640, 480), "SkiPro"), mPlayer()
+{
+  mPlayer.setRadius(40.f);
+  mPlayer.setPosition(100.f, 100.f);
+  mPlayer.setFillColor(Color::Cyan);
+}
+
+void Game::run()
+{
+  while(mWindow.isOpen())
+  {
+    processEvents();
+    update();
+    render();
+  }
+}
 
 int main()
 {
