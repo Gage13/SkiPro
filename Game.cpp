@@ -32,6 +32,28 @@ void Game::run()
   }
 }
 
+void Game::processEvents()
+{
+  Event event;
+  while (mWindow.pollEvent(event))
+  {
+    if (event.type == Event::Closed)
+      mWindow.close();
+  }
+}
+
+void Game::update()
+{
+  
+}
+
+void Game::render()
+{
+  mWindow.clear();
+  mWindow.draw(mPlayer);
+  mWindow.display();
+}
+
 int main()
 {
   Game game;
