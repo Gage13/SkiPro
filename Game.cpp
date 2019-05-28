@@ -32,19 +32,51 @@ void Game::run()
   }
 }
 
+void Game::handlePlayerInput(Keyborad::Key key, bool isPressed)
+{
+  if (key == Keyboard::W)
+    mIsMovingUp = isPressed;
+  else if (key == Keyboard::S)
+    mIsMovingDown = isPressed;
+  else if (key == Keyboard::A)
+    mIsMovingLeft = isPressed;
+  else if (key == Keyboard::D)
+    mIsMovingRight = isPressed;
+}
+
 void Game::processEvents()
 {
   Event event;
   while (mWindow.pollEvent(event))
   {
-    if (event.type == Event::Closed)
-      mWindow.close();
+    switch(event.type)
+    {
+      case Event::KeyPressed:
+        handlePlayerInput(event.key.code, true);
+        break;
+      case Event::KeyReleased:
+        handlePlayerInput(event.key.code, false);
+        break;
+      case Event::Closed:
+        mWindow.close();
+        break;
+    }
   }
 }
 
 void Game::update()
 {
+  Vector2f movement(0.f, 0.f);
+  if (mIsMovingUp)
+    movement.x += 1.0f;
+  else if (mIsMovingDown)
+    movement.x -= 1.0f;
+  else if (mIsMovingRight)
+    movement.y += 1.0f;
+  else if (mIsMovingLeft)
+    movement.y -= 1.0f;
   
+  mPlayer.move(movement);
 }
 
 void Game::render()
