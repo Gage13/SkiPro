@@ -75,5 +75,31 @@ private:
 
 int main(void)
 {
+  // Create the main window
+  RenderWindow gameWindow (VideoMode(640, 480), "SkiPro!");
+  
+  // Control the handling of events
+  Event eventHandler;
+  
+  // The main game loop will run until the game is closed
+  while(gameWindow.isOpen())
+  {
+    // Fetch all events
+    while (gameWindow.pollEvent(eventHandler))
+    {
+      // Use a switch statement to control the window, depending on type of event
+      switch(eventHandler)
+      {
+        // By default, close the game window
+        default:
+          gameWindow.close();
+          break;
+      }
+    }
+    
+    // Clear the screen
+    gameWindow.clear();
+  }
+  
   return EXIT_SUCCESS;
 }
