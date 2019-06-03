@@ -1,95 +1,79 @@
 #include <SFML/Graphics.hpp>
+#include <cstdlib>
+#include <string>
 using namespace sf;
+using namespace std;
 
-class Game
+// Design a class that will act as level constructor
+class LevelConstructor : public Drawable, public Transformable
 {
 public:
-  Game();
-  void run();
+  // This class method will load the tileset and using number selections, it will construct a tilemap
+  /* Arguments for load(): tileset location, Vector2u containing the size of the tilemap, array containing the tile selections
+  ** number of horizontal and vertical tiles (height and width) */
+  bool load(string fileLocation, Vector2u sizeOfTiles, int* tileSelections, heigth, width)
+  {
+    // Load the file containing the tileset
+    if (!setOfTiles.loadFromTile(fileLocation))
+      return false;   // The SFML will return the reason for failure
+    
+    // Define what will vertex array store
+    vertices.setPrimitiveType(Quads);
+    // Resize the array to fit entire screen
+    vertices.resize(width*height*4)
+    
+    // Create a nested loop that will assemble the tilemap using the tileset and selections provided
+    for (int i = 0; i < width; ++i)
+    {
+      for (int j = 0; j < height; ++j)
+      {
+        // Obtain the current tile selection number
+        int currentTileNumber = tileSelections[i+j*width]
+        
+        // Obtain the current tile position
+        tileHorizontal = currentTileNumber % (vertices.getSize().x / sizeOfTiles.x);
+        tileVertical = currentTileNumber / (vertices.getSize().x / sizeOfTiles.x);
+        
+        // Set the pointer to the current tile quad
+        Vertex* quad = &vertices[(i+j*width)*4];
+        
+        // Define the quads four positions and textures
+        quad[0].position = Vector2f(i*sizeOfTiles.x, j*sizeOfTiles.y);
+        quad[1].position = Vector2f((i+1)*sizeOfTiles.x, j*sizeOfTiles.y);
+        quad[2].position = Vector2f((i+1)*sizeOfTiles.x, (j+1)*sizeOfTiles.y);
+        quad[3].position = Vector2f(i*sizeOfTiles.x, (j+1)*sizeOfTiles.y);
+        
+        quad[0].textCoords = Vector2f(tileHorizontal*sizeOfTiles.x, tileVertical*sizeOfTiles.y);
+        quad[1].textCoords = Vector2f((tileHorizontal+1)*sizeOfTiles.x, tileVertical*sizeOfTiles.y);
+        quad[2].textCoords = Vector2f((tileHorizontal+1)*sizeOfTiles.x, (tileVertical+1)*sizeOfTiles.y);
+        quad[3].textCoords = Vector2f(tileHorizontal*sizeOfTiles.x, (tileVertical+1)*sizeOfTiles.y);
+      }
+    }
+    
+    // Level was created. Indicate success
+    return true;
+  }
+
 private:
-  void processEvents();
-  void update();
-  void render();
-private:
-  sf::RenderWindow mWindow;
-  sf::CircleShape mPlayer;
+  // Define the overriden draw method for drawing levels using tiles
+  virtual void draw(RenderTarget &target, RenderStates state) const
+  {
+    // Allow the map to be transformed
+    state.transform *= getTransform();
+    
+    // Apply the objects textures to the state
+    state.texture = &setOfTiles;
+    
+    // Draw the map
+    target.draw(verties, state)
+  }
+  
+  // Define a texture and vertex array
+  Texture setOfTiles;
+  VertexArray vertices;
 };
 
-Game::Game() : mWindow(VideoMode(640, 480), "SkiPro"), mPlayer()
+int main(void)
 {
-  mPlayer.setRadius(40.f);
-  mPlayer.setPosition(100.f, 100.f);
-  mPlayer.setFillColor(Color::Cyan);
-}
-
-void Game::run()
-{
-  while(mWindow.isOpen())
-  {
-    processEvents();
-    update();
-    render();
-  }
-}
-
-void Game::handlePlayerInput(Keyborad::Key key, bool isPressed)
-{
-  if (key == Keyboard::W)
-    mIsMovingUp = isPressed;
-  else if (key == Keyboard::S)
-    mIsMovingDown = isPressed;
-  else if (key == Keyboard::A)
-    mIsMovingLeft = isPressed;
-  else if (key == Keyboard::D)
-    mIsMovingRight = isPressed;
-}
-
-void Game::processEvents()
-{
-  Event event;
-  while (mWindow.pollEvent(event))
-  {
-    switch(event.type)
-    {
-      case Event::KeyPressed:
-        handlePlayerInput(event.key.code, true);
-        break;
-      case Event::KeyReleased:
-        handlePlayerInput(event.key.code, false);
-        break;
-      case Event::Closed:
-        mWindow.close();
-        break;
-    }
-  }
-}
-
-void Game::update(Time deltaTime)
-{
-  Vector2f movement(0.f, 0.f);
-  if (mIsMovingUp)
-    movement.x += 1.0f;
-  else if (mIsMovingDown)
-    movement.x -= 1.0f;
-  else if (mIsMovingRight)
-    movement.y += 1.0f;
-  else if (mIsMovingLeft)
-    movement.y -= 1.0f;
-  
-  mPlayer.move(movement * deltaTime.asSeconds());
-}
-
-void Game::render()
-{
-  mWindow.clear();
-  mWindow.draw(mPlayer);
-  mWindow.display();
-}
-
-int main()
-{
-  Game game;
-  game.run();
-  
-  return 0;
+  return EXIT_SUCCESS;
 }
