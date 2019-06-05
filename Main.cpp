@@ -177,6 +177,12 @@ int main(void)
 
 	// Create an Event variable which store user-generated game events
 	Event event;
+	
+	// Make a player
+	Texture playerText;
+	Sprite playerSprite;
+	playerText.loadFromFile("image.png");
+	playerSprite.loadFromTexture(playerText);
 
 	// Process events as long the window is open
 	while (gameWindow.isOpen())
